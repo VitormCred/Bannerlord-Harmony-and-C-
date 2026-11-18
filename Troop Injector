@@ -1,0 +1,24 @@
+using HarmonyLib;
+using System.Linq;
+using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Party;
+using MCM;
+
+[HarmonyPatch(typeof(Campaign),"OnSessionStart")]
+    internal class TroopInjection
+    {
+    [HarmonyPostfix]
+    public static void Postfix()
+    {
+        
+        var lordsParties = MobileParty.AllLordParties
+            .Where(party => party != null && party.IsActive && party.IsLordParty && party.LeaderHero != null);
+         
+        foreach(MobileParty lordpartie in lordsParties)
+        {
+            CharacterObject troop = CharacterObject.Find("khuzait_torguud");
+            lordpartie.MemberRoster.AddToCounts(troop, 5);
+        }
+        
+    }
+    }
